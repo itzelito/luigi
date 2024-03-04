@@ -3,7 +3,7 @@ export function byId(id) {
     return document.getElementById(id);
 }
 export function setText(id, text) {
-    byId(id).hidden = false;
+    byId(id).innerText = text;
 }
 export function toon(id) {
     byId(id).hidden = false;
