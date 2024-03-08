@@ -10,6 +10,8 @@ import org.springframework.test.jdbc.JdbcTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -85,6 +87,13 @@ class PizzaControllerTest {
                                 jdbcClient, PIZZAS_TABLE,"prijs between 10 and 20"))
 
                 );
+    }
+    @Test
+    void deleteVerwijdertDePizza() throws Exception{
+        var id= idVanTest1Pizza();
+        mockMvc.perform(delete("/pizzas/{id}", id))
+                .andExpect(status().isOk());
+        assertThat(JdbcTestUtils.countRowsInTableWhere(jdbcClient, PIZZAS_TABLE, "id=" + id)).isZero();
     }
 
 }

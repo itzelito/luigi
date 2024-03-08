@@ -69,5 +69,14 @@ class PizzaRepository {
                 .query(Pizza.class)
                 .list();
     }
+    void delete(long id){
+        var sql= """
+                delete from pizzas
+                where id = ?
+                """;
+        jdbcClient.sql(sql)
+                .param(id)
+                .update();
+    }
 
 }
