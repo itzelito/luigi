@@ -33,6 +33,12 @@ class PizzaService {
     void delete (long id){
         pizzaRepository.delete(id);
     }
+    @Transactional
+    long create(NieuwePizza nieuwePizza){
+        var winst = nieuwePizza.prijs().multiply(BigDecimal.valueOf(0.1));
+        var pizza = new Pizza(0, nieuwePizza.naam(), nieuwePizza.prijs(), winst);
+        return pizzaRepository.create(pizza);
+    }
 
 
 
