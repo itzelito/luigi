@@ -1,6 +1,8 @@
 package be.vdab.luigi.pizzas;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -110,6 +112,16 @@ class PizzaControllerTest {
                 .andReturn().getResponse().getContentAsString();
         assertThat(JdbcTestUtils.countRowsInTableWhere(
                 jdbcClient, PIZZAS_TABLE, "naam= 'test3' and id=" + responseBody)).isOne();
+    }
+    @ParameterizedTest
+    @ValueSource(strings= {"pizzaZonderNaam.json", "pizzaMetLegeNaam.json", "pizzaZonderPrijs.json", "pizzaMetNegatievePrijs.json"})
+    void createMetVerkeerdeDataMislukt(String bestandsNaam) throws Exception{
+        var jsonData= Files.readString(TEST_RESOURCES.resolve(bestandsNaam));
+        mockMvc.perform(post("/pizzas")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonData))
+                .andExpect(status().isBadRequest()); 
+
     }
 
 }
