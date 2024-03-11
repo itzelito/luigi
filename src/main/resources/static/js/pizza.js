@@ -15,6 +15,7 @@ function verbergPizzaEnFouten() {
     verberg("zoekIdFout");
     verberg("nietGevonden");
     verberg("storing");
+    verberg("nieuwePrijsFout");
 }
 async function findById(id) {
     const response = await fetch(`pizzas/${id}`);
@@ -26,6 +27,31 @@ async function findById(id) {
     } else {
         if (response.status === 404) {
             toon("nietGevonden");
+        } else {
+            toon("storing");
+        }
+    }
+
+    byId("bewaar").onclick = async function(){
+        const nieuwePrijsInput = byId("nieuwePrijs");
+        if(nieuwePrijsInput.checkValidity()) {
+            verberg("nieuwePrijsFout");
+            updatePrijs(Number(nieuwePrijsInput.value));
+        }else{
+            toon("nieuwePrijsFout");
+            nieuwePrijsInput.focus();
+        }
+
+    };
+    async function updatePrijs(nieuwePrijs){
+        const response = await fetch(`pizzas/${byId("zoekId").value}/prijs`,
+            {
+                method: "PATCH",
+                headers: {'Content-Type': "application/json"},
+                body: JSON.stringify(nieuwePrijs)
+            });
+        if(response.ok){
+            setText("prijs", nieuwePrijs);
         } else {
             toon("storing");
         }
