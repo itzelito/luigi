@@ -4,6 +4,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 class PrijsRepository {
     private final JdbcClient jdbcClient;
@@ -20,6 +22,18 @@ class PrijsRepository {
         jdbcClient.sql(sql)
                 .params(prijs.getPrijs(), prijs.getVanaf(), prijs.getPizzaId())
                 .update();
+    }
+    List<Prijs> findByPizzaId(long pizzaId){
+        var sql = """
+                select prijs, vanaf, pizzaId
+                from prijzen
+                where pizzaId = ? 
+                order by vanaf
+                """;
+        return jdbcClient.sql(sql)
+                .param(pizzaId)
+                .query(Prijs.class)
+                .list();
     }
 
 }
